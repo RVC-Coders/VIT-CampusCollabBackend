@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.blogapp.controllers.api.CommentControllerApi;
 import com.demo.blogapp.payload.ApiResponse;
 import com.demo.blogapp.payload.CommentDto;
 import com.demo.blogapp.services.CommentService;
 
 @RestController
-@RequestMapping("/api/comment")
-public class CommentController {
+public class CommentController implements CommentControllerApi {
 
 	private final CommentService commentService;
 	
@@ -28,32 +28,32 @@ public class CommentController {
 	}
     
 	
-	@PostMapping("/{postId}")
-	ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto,@PathVariable Integer postId){
+
+	public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto,@PathVariable Integer postId){
 		CommentDto newCommentDto = commentService.createComment(commentDto,postId);
 		
 		return new ResponseEntity<>(newCommentDto,HttpStatus.CREATED);
 	}
 	
 	
-	@PutMapping("/{commentId}")
-	ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto commentDto,@PathVariable Integer commentId){
+
+	public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto commentDto,@PathVariable Integer commentId){
 		CommentDto updateCommentDto = commentService.updateComment(commentDto, commentId);
 		
 		return new ResponseEntity<>(updateCommentDto,HttpStatus.CREATED);
 	}
 	
 	
-	@GetMapping("/{postId}")
-	ResponseEntity<List<CommentDto>> getComments(@PathVariable Integer postId){
+	
+	public ResponseEntity<List<CommentDto>> getComments(@PathVariable Integer postId){
 		List<CommentDto> commentDtos = commentService.getComments(postId);
 		
 		return new ResponseEntity<>(commentDtos,HttpStatus.CREATED);
 	}
 	
 	
-	@DeleteMapping("/{commentId}")
-	ResponseEntity<ApiResponse> removeComment(@PathVariable Integer commentId){
+	
+	public ResponseEntity<ApiResponse> removeComment(@PathVariable Integer commentId){
 		commentService.removeComment(commentId);
 		return new ResponseEntity<>(new ApiResponse("Comment is deleted successfully",true),HttpStatus.CREATED);
 	}

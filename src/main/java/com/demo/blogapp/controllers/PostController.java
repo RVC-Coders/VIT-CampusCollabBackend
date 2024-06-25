@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.demo.blogapp.controllers.api.PostControllerApi;
 import com.demo.blogapp.payload.ApiResponse;
 import com.demo.blogapp.payload.PostDto;
 import com.demo.blogapp.payload.PostResponse;
@@ -32,8 +33,7 @@ import com.demo.blogapp.services.PostService;
 import com.demo.blogapp.utils.AppConstant;
 
 @RestController
-@RequestMapping("/api/post")
-public class PostController {
+public class PostController implements PostControllerApi {
 
 	private final PostService service;
 	private final FileService fileService;
@@ -52,7 +52,7 @@ public class PostController {
 	}
 
 	
-	@PostMapping("/user/{userId}/category/{categoryId}/posts")
+	
 	public ResponseEntity<PostDto> createPost(@RequestBody PostDto pD, @PathVariable Integer userId,
 			@PathVariable Integer categoryId, @RequestParam("isPublic") boolean isPublic) {
 		PostDto postDto = service.createPost(pD, userId, categoryId, isPublic);
@@ -62,8 +62,6 @@ public class PostController {
 		return new ResponseEntity<>(postDto, HttpStatus.CREATED);	
 	}
 
-
-	@PutMapping("/{postId}")
 	public ResponseEntity<PostDto> updatePost(@RequestBody PostDto pD, @PathVariable Integer postId, @RequestParam(value = "userId", required= true) Integer userId) {
 
 		Integer userIdOfPost = postIdToUserId.get(postId);
@@ -78,7 +76,6 @@ public class PostController {
 	}
 
 	
-	@GetMapping("category/{categoryId}/posts")
 	public ResponseEntity<List<PostDto>> getPostByCategory(@PathVariable Integer categoryId) {
 		List<PostDto> postDto = service.getPostByCategory(categoryId);
 		return new ResponseEntity<>(postDto, HttpStatus.OK);
@@ -91,15 +88,13 @@ public class PostController {
 		return new ResponseEntity<>(postDto, HttpStatus.OK);
 	}
 
-	
-	@GetMapping("/{postId}")
+
 	public ResponseEntity<PostDto> getPost(@PathVariable Integer postId) {
 		PostDto postDto = service.getPost(postId);
 		return new ResponseEntity<>(postDto, HttpStatus.OK);
 	}
 
 	
-	@GetMapping
 	public ResponseEntity<PostResponse> getPosts(
 			@RequestParam(value = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) Integer pageSize,
 			@RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -110,7 +105,6 @@ public class PostController {
 	}
 
 	
-	@DeleteMapping("/{postId}")
 	public ResponseEntity<ApiResponse> removePost(@PathVariable Integer postId) {
 		service.deletePost(postId);
 		ApiResponse apiResponse = new ApiResponse(String.format("Post with id = %d is deleted successfully", postId),
@@ -119,7 +113,6 @@ public class PostController {
 	}
 
 	
-	@DeleteMapping("/category/{categoryId}")
 	public ResponseEntity<ApiResponse> removePostByCategory(@PathVariable Integer categoryId) {
 		service.deletePostByCategory(categoryId);
 		ApiResponse apiResponse = new ApiResponse(
@@ -128,7 +121,6 @@ public class PostController {
 	}
 
 	
-	@DeleteMapping("/user/{userId}")
 	public ResponseEntity<ApiResponse> removePostsByUser(@PathVariable Integer userId) {
 		service.deletePostByUser(userId);
 		ApiResponse apiResponse = new ApiResponse(
@@ -137,15 +129,13 @@ public class PostController {
 	}
 
 	
-	@GetMapping("/search/{keyword}")
 	public ResponseEntity<List<PostDto>> searchPostsByTitle(@PathVariable String keyword) {
 		List<PostDto> postDtos = service.searchPosts(keyword);
 
 		return new ResponseEntity<>(postDtos, HttpStatus.OK);
 	}
 
-	
-	@PostMapping("image/upload/{postId}")
+
 	public ResponseEntity<PostDto> uploadImage(@RequestParam("image") MultipartFile imageFile,
 			@PathVariable Integer postId) {
 
@@ -159,8 +149,6 @@ public class PostController {
 		return new ResponseEntity<>(postDto, HttpStatus.OK);
 	}
 
-	
-	@GetMapping(value = "image/download/{postId}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public ResponseEntity<byte[]> downloadImage(@PathVariable Integer postId) throws IOException {
 		PostDto postDto = service.getPost(postId);
 		String fileName = postDto.getImageName();

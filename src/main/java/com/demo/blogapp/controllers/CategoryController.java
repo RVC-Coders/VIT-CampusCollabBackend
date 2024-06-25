@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.blogapp.controllers.api.CategoryControllerApi;
 import com.demo.blogapp.payload.ApiResponse;
 import com.demo.blogapp.payload.CategoryDto;
 import com.demo.blogapp.services.CategoryService;
@@ -22,8 +23,7 @@ import com.demo.blogapp.services.CategoryService;
 
 
 @RestController
-@RequestMapping("/api/category")
-public class CategoryController {
+public class CategoryController implements CategoryControllerApi{
    
 	private final CategoryService service;
 	
@@ -32,14 +32,13 @@ public class CategoryController {
 	}
 	
 	
-	@PostMapping
+	
 	public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto cD){
 		CategoryDto c = service.createCategory(cD);
 		return new ResponseEntity<CategoryDto>(c,HttpStatus.CREATED);
 	}
 	
 	
-	@PutMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto cD,@PathVariable Integer categoryId){
 		CategoryDto c = service.updateCategory(cD, categoryId);
 		
@@ -47,20 +46,16 @@ public class CategoryController {
 	}
 	
 	
-	@GetMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> getCategory(@PathVariable Integer categoryId){
 		CategoryDto cd = service.getCategory(categoryId);
 		return new ResponseEntity<CategoryDto>(cd,HttpStatus.OK);
 	}
-	
-	
-	@GetMapping
+		
 	public ResponseEntity<List<CategoryDto>> getCategories(){
 		List<CategoryDto> ls = service.getCategories();
 		return new ResponseEntity<>(ls,HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/{categoryId}")
 	public ResponseEntity<ApiResponse> removeCategory(@PathVariable Integer categoryId){
 		service.deleteCategory(categoryId);
 		

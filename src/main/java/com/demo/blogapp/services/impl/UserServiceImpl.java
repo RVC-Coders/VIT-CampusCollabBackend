@@ -17,7 +17,10 @@ import com.demo.blogapp.repository.UserRepository;
 import com.demo.blogapp.services.UserService;
 import com.demo.blogapp.utils.AppConstant;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepo;
@@ -35,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto addUser(UserDto user) {
-
+		log.info("UserControllerServiceImpl : Inside addUserService Layer");
 		User u = userDtoToUser(user);
 		
 		u = userRepo.save(u);
