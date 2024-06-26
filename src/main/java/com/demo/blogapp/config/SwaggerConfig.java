@@ -21,22 +21,22 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfig {
    
 	public static final String AUTHORIZATION_HEADER = "Authorization";
-//	
+
 	private ApiKey apiKeys() {
 	
 		return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");	
 	}
-//	
+
 	private List<SecurityContext> securityContext(){
 		return Arrays.asList(SecurityContext.builder().securityReferences(sf()).build());
 		
 	}
+	
 	private List<SecurityReference> sf(){
 		AuthorizationScope scope = new AuthorizationScope("global","Access everything");
 		return Arrays.asList(new SecurityReference("JWT", new AuthorizationScope[] {scope} ));	
 	}
 	
-//	builder which is intended to be the primary interface into the Springfox framework.Provides sensible defaults and convenience methods for configuration.
 	@Bean
 	public Docket api() {
 		
